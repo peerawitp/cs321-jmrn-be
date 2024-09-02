@@ -1,15 +1,14 @@
-# Elysia with Bun runtime
-
-## Getting Started
-To get started with this template, simply paste this command into your terminal:
-```bash
-bun create elysia ./elysia-example
-```
+# CS321 Project
 
 ## Development
-To start the development server run:
+To start the development server:
+
+Copy the `.env.example` file to `.env` and fill in the required values.
 ```bash
-bun run dev
+cp .env.example .env
 ```
 
-Open http://localhost:3000/ with your browser to see the result.
+Start the development server using docker-compose:
+```bash
+docker compose -f docker-compose-dev.yml up
+```
