@@ -3,7 +3,8 @@ services:
     image: "oven/bun"
     entrypoint: []
     command: "/bin/sh -c 'bun install && bun run --watch src/index.ts'"
-    ports: ["3000:3000"]
+    ports:
+      - ${APP_PORT}:3000
     volumes: ["./:/home/bun/app"]
     environment:
       DATABASE_URL: ${DATABASE_URL}
