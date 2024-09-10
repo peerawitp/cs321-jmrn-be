@@ -8,110 +8,126 @@ datasource db {
 }
 
 model User {
-  id        String      @id @default(cuid())
-  email     String      @unique
+  id        String @id @default(cuid())
+  email     String @unique
   password  String
   firstName String
   lastName  String
   phone     String
 
-  addresses Address[]
-  orders    Order[]
+  role UserRole @default(CUSTOMER)
+
+  addresses   Address[]
+  orders      Order[]
   customTires CustomTire[]
 
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
-}
-
-model Address {
-  id        Int     @id @default(autoincrement())
-  userId    String
-  user      User    @relation(fields: [userId], references: [id])
-  street    String
-  city      String
-  state     String
-  postalCode String
-  country   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
+model Address {
+  id         Int      @id @default(autoincrement())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  street     String
+  city       String
+  state      String
+  postalCode String
+  country    String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
 model Product {
-  id               Int       @id @default(autoincrement())
-  name             String
-  description      String?
-  imageUrl         String?   // รูปภาพ URL ของผลิตภัณฑ์
-  tireSize         String    // ขนาดยาง เช่น 100/90-14 M/C 57P
-  patternAndType   String    // ลายดอกยาง เช่น SS-560R T/L
-  overallDiameter  Float     // เส้นผ่านศูนย์กลาง (mm.) เช่น 535
-  overallWidth     Float     // ความกว้าง (mm.) เช่น 98
-  measurementRim   String    // ขนาดวงล้อที่ใช้วัด เช่น MT 2.15
-  standardRim      String    // ขนาดวงล้อมาตรฐาน เช่น MT 2.50
-  wheel            WheelType // ประเภทของล้อที่สามารถใช้ยางได้ (หน้า, หลัง, หรือ ทั้งคู่)
-  type             TireType  // ประเภทของยางตามที่กำหนด เช่น Scooter, OnRoad-Automatic เป็นต้น
-  quantity         Int       // จำนวนสินค้าที่มีในคลัง
-  price            Float
-  orderItems       OrderItem[]
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
+  id              Int         @id @default(autoincrement())
+  name            String
+  description     String?
+  imageUrl        String? // รูปภาพ URL ของผลิตภัณฑ์
+  tireSize        String // ขนาดยาง เช่น 100/90-14 M/C 57P
+  patternAndType  String // ลายดอกยาง เช่น SS-560R T/L
+  overallDiameter Float // เส้นผ่านศูนย์กลาง (mm.) เช่น 535
+  overallWidth    Float // ความกว้าง (mm.) เช่น 98
+  measurementRim  String // ขนาดวงล้อที่ใช้วัด เช่น MT 2.15
+  standardRim     String // ขนาดวงล้อมาตรฐาน เช่น MT 2.50
+  wheel           WheelType // ประเภทของล้อที่สามารถใช้ยางได้ (หน้า, หลัง, หรือ ทั้งคู่)
+  type            TireType // ประเภทของยางตามที่กำหนด เช่น Scooter, OnRoad-Automatic เป็นต้น
+  quantity        Int // จำนวนสินค้าที่มีในคลัง
+  price           Float
+  orderItems      OrderItem[]
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
 }
 
 model CustomTire {
-  id               Int       @id @default(autoincrement())
-  userId           String
-  user             User      @relation(fields: [userId], references: [id])
-  name             String    // ชื่อยางที่ผู้ใช้กำหนดเอง
-  tireSize         String    // ขนาดยาง เช่น 100/90-14 M/C 57P
-  patternAndType   String    // ลายดอกยาง เช่น SS-560R T/L
-  overallDiameter  Float     // เส้นผ่านศูนย์กลาง (mm.) เช่น 535
-  overallWidth     Float     // ความกว้าง (mm.) เช่น 98
-  measurementRim   String    // ขนาดวงล้อที่ใช้วัด เช่น MT 2.15
-  standardRim      String    // ขนาดวงล้อมาตรฐาน เช่น MT 2.50
-  wheel            WheelType // ประเภทของล้อที่สามารถใช้ยางได้ (หน้า, หลัง, หรือ ทั้งคู่)
-  type             TireType  // ประเภทของยางตามที่กำหนด เช่น Scooter, OnRoad-Automatic เป็นต้น
-  quantity         Int       // จำนวนสินค้าที่มีในคลัง
-  price            Float     // ราคาที่กำหนดเอง
-  orderItems       OrderItem[]
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
+  id              Int         @id @default(autoincrement())
+  userId          String
+  user            User        @relation(fields: [userId], references: [id])
+  name            String // ชื่อยางที่ผู้ใช้กำหนดเอง
+  tireSize        String // ขนาดยาง เช่น 100/90-14 M/C 57P
+  patternAndType  String // ลายดอกยาง เช่น SS-560R T/L
+  overallDiameter Float // เส้นผ่านศูนย์กลาง (mm.) เช่น 535
+  overallWidth    Float // ความกว้าง (mm.) เช่น 98
+  measurementRim  String // ขนาดวงล้อที่ใช้วัด เช่น MT 2.15
+  standardRim     String // ขนาดวงล้อมาตรฐาน เช่น MT 2.50
+  wheel           WheelType // ประเภทของล้อที่สามารถใช้ยางได้ (หน้า, หลัง, หรือ ทั้งคู่)
+  type            TireType // ประเภทของยางตามที่กำหนด เช่น Scooter, OnRoad-Automatic เป็นต้น
+  quantity        Int // จำนวนสินค้าที่มีในคลัง
+  price           Float // ราคาที่กำหนดเอง
+  orderItems      OrderItem[]
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
 }
 
 model Order {
-  id           Int         @id @default(autoincrement())
-  userId       String
-  user         User        @relation(fields: [userId], references: [id])
-  orderItems   OrderItem[]
-  totalAmount  Float
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
-}
-
-model OrderItem {
   id          Int         @id @default(autoincrement())
-  orderId     Int
-  order       Order       @relation(fields: [orderId], references: [id])
-  productId   Int?
-  product     Product?    @relation(fields: [productId], references: [id])
-  customTireId Int?
-  customTire  CustomTire? @relation(fields: [customTireId], references: [id])
-  quantity    Int
-  price       Float
+  userId      String
+  user        User        @relation(fields: [userId], references: [id])
+  status      OrderStatus @default(PROCESSING)
+  orderItems  OrderItem[]
+  totalAmount Float
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 }
 
+model OrderItem {
+  id           Int         @id @default(autoincrement())
+  orderId      Int
+  order        Order       @relation(fields: [orderId], references: [id])
+  productId    Int?
+  product      Product?    @relation(fields: [productId], references: [id])
+  customTireId Int?
+  customTire   CustomTire? @relation(fields: [customTireId], references: [id])
+  quantity     Int
+  price        Float
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+}
+
+enum UserRole {
+  CUSTOMER
+  MARKETING
+  STORE
+}
+
+enum OrderStatus {
+  PROCESSING
+  PREPARING
+  SHIPPED
+  SUCCESS
+}
+
 enum TireType {
-  SCOOTER           // ยางสำหรับรถสกู๊ตเตอร์
-  ONROAD_AUTOMATIC  // ยางสำหรับรถออโตเมติกที่ใช้บนถนนทั่วไป
-  ONROAD_SPORT      // ยางสำหรับรถสปอร์ตที่ใช้บนถนนทั่วไป
-  RACING            // ยางสำหรับการแข่งรถ
-  ON_OFF_ROAD       // ยางสำหรับใช้ได้ทั้งบนถนนและทางดิน
-  OFF_ROAD          // ยางสำหรับใช้ทางดิน หรือเส้นทางที่ไม่ใช่ถนน
-  CLASSIC           // ยางสำหรับรถที่มีสไตล์คลาสสิก
+  SCOOTER // ยางสำหรับรถสกู๊ตเตอร์
+  ONROAD_AUTOMATIC // ยางสำหรับรถออโตเมติกที่ใช้บนถนนทั่วไป
+  ONROAD_SPORT // ยางสำหรับรถสปอร์ตที่ใช้บนถนนทั่วไป
+  RACING // ยางสำหรับการแข่งรถ
+  ON_OFF_ROAD // ยางสำหรับใช้ได้ทั้งบนถนนและทางดิน
+  OFF_ROAD // ยางสำหรับใช้ทางดิน หรือเส้นทางที่ไม่ใช่ถนน
+  CLASSIC // ยางสำหรับรถที่มีสไตล์คลาสสิก
 }
 
 enum WheelType {
-  FRONT  // ยางหน้ารถ
-  REAR   // ยางหลังรถ
-  BOTH   // ยางที่สามารถใช้ได้ทั้งหน้าหลัง
+  FRONT // ยางหน้ารถ
+  REAR // ยางหลังรถ
+  BOTH // ยางที่สามารถใช้ได้ทั้งหน้าหลัง
 }
