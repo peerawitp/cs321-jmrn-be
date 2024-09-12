@@ -1,7 +1,8 @@
 import { Elysia } from "elysia";
-import { db } from "../db";
 
 import { jwtAccess } from "../jwt";
+
+import userService from "../services/userService";
 
 import {
   LoginDTO,
@@ -9,6 +10,7 @@ import {
   RegisterDTO,
   RegisterResponseDTO,
 } from "../dtos/Auth";
+import authService from "../services/authService";
 
 export const auth = async (app: Elysia) =>
   app.group("/auth", (app) =>
@@ -17,19 +19,12 @@ export const auth = async (app: Elysia) =>
       .post(
         "/login",
         async ({ body, jwt }) => {
-          const user = await db.user.findUnique({
-            where: { email: body.email },
+          const user = await authService.login(body);
+
+          const accessToken = await jwt.sign({
+            id: user.id,
+            email: user.email,
           });
-          if (!user) throw new Error("USER_NOT_FOUND");
-
-          const isMatch = await Bun.password.verify(
-            body.password,
-            user.password,
-          );
-
-          if (!isMatch) throw new Error("INVALID_PASSWORD");
-
-          const accessToken = await jwt.sign({ id: user.id });
           return { token: accessToken };
         },
         {
@@ -40,24 +35,12 @@ export const auth = async (app: Elysia) =>
       .post(
         "/register",
         async ({ body, jwt }) => {
-          const isUserExist = await db.user.findUnique({
-            where: { email: body.email },
+          const user = await userService.createUser(body);
+
+          const accessToken = await jwt.sign({
+            id: user.id,
+            email: user.email,
           });
-          if (isUserExist) throw new Error("USER_ALREADY_EXIST");
-
-          const hashedPassword = await Bun.password.hash(body.password);
-
-          const user = await db.user.create({
-            data: {
-              email: body.email,
-              password: hashedPassword,
-              phone: body.phone,
-              firstName: body.firstName,
-              lastName: body.lastName,
-            },
-          });
-
-          const accessToken = await jwt.sign({ id: user.id });
           return {
             id: user.id,
             email: user.email,

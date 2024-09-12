@@ -1,4 +1,4 @@
-import { t } from "elysia";
+import { Static, t } from "elysia";
 
 export const LoginDTO = t.Object({
   email: t.String({
@@ -12,6 +12,7 @@ export const LoginDTO = t.Object({
 export const LoginResponseDTO = t.Object({
   token: t.String(),
 });
+export type LoginDTOType = Static<typeof LoginDTO>;
 
 export const RegisterDTO = t.Object({
   email: t.String({
@@ -34,6 +35,7 @@ export const RegisterDTO = t.Object({
     error: "Lastname must be characters",
   }),
 });
+export type RegisterDTOType = Static<typeof RegisterDTO>;
 
 export const RegisterResponseDTO = t.Object({
   id: t.String(),
