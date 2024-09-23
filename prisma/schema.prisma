@@ -26,16 +26,21 @@ model User {
 }
 
 model Address {
-  id         Int      @id @default(autoincrement())
-  userId     String
-  user       User     @relation(fields: [userId], references: [id])
-  street     String
-  city       String
-  state      String
-  postalCode String
-  country    String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id          Int      @id @default(autoincrement())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  houseNumber String // หมายเลขบ้าน
+  village     String? // หมู่บ้าน (optional)
+  alley       String? // ซอย (optional)
+  street      String // ถนน
+  subDistrict String // ตำบล/แขวง
+  district    String // อำเภอ/เขต
+  province    String // จังหวัด
+  postalCode  String // รหัสไปรษณีย์
+  country     String   @default("Thailand") // ประเทศ, default set to Thailand
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  Order       Order[]
 }
 
 model Product {
@@ -85,8 +90,12 @@ model Order {
   status      OrderStatus @default(PROCESSING)
   orderItems  OrderItem[]
   totalAmount Float
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+
+  addressId       Int
+  customerAddress Address @relation(fields: [addressId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model OrderItem {
@@ -111,6 +120,7 @@ enum UserRole {
 
 enum OrderStatus {
   PROCESSING
+  WAITING_PAYMENT
   PREPARING
   SHIPPED
   SUCCESS
