@@ -1,11 +1,11 @@
 import { Elysia } from "elysia";
-import { swagger } from "@elysiajs/swagger";
 
 import { auth } from "./controllers/auth";
+import { user } from "./controllers/user";
 
 const app = new Elysia()
-  .use(swagger())
   .use(auth)
+  .use(user)
   .get("/", () => "Hello Tyre Shop!")
   .listen(3000);
 

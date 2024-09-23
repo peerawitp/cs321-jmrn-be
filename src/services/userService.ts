@@ -1,5 +1,7 @@
 import { RegisterDTOType } from "../dtos/Auth";
 
+import { AddAddressDTOType } from "../dtos/User";
+
 import { db } from "../db";
 
 const findUserFromID = async (id: string) => {
@@ -49,9 +51,24 @@ const createUser = async (user: RegisterDTOType) => {
   return newUser;
 };
 
+const addNewAddress = async (userId: string, address: AddAddressDTOType) => {
+  const newAddress = await db.address.create({
+    data: {
+      userId: userId,
+      street: address.street,
+      city: address.city,
+      state: address.state,
+      postalCode: address.postalCode,
+      country: address.country,
+    },
+  });
+  return newAddress;
+};
+
 export default {
   findUserFromID,
   findUserFromEmail,
   findUserFromPhone,
   createUser,
+  addNewAddress,
 };
