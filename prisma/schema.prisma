@@ -11,105 +11,105 @@ model User {
   id        String @id @default(cuid())
   email     String @unique
   password  String
-  firstName String
-  lastName  String
+  firstName String @map("first_name")
+  lastName  String @map("last_name")
   phone     String @unique
 
   role UserRole @default(CUSTOMER)
 
-  addresses   Address[]
-  orders      Order[]
-  customTires CustomTire[]
+  addresses Address[]
+  orders    Order[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 }
 
 model Address {
   id          Int      @id @default(autoincrement())
-  userId      String
+  userId      String   @map("user_id")
   user        User     @relation(fields: [userId], references: [id])
-  houseNumber String // หมายเลขบ้าน
+  houseNumber String   @map("house_number") // หมายเลขบ้าน
   village     String? // หมู่บ้าน (optional)
   alley       String? // ซอย (optional)
   street      String // ถนน
-  subDistrict String // ตำบล/แขวง
+  subDistrict String   @map("sub_district") // ตำบล/แขวง
   district    String // อำเภอ/เขต
   province    String // จังหวัด
-  postalCode  String // รหัสไปรษณีย์
+  postalCode  String   @map("postal_code") // รหัสไปรษณีย์
   country     String   @default("Thailand") // ประเทศ, default set to Thailand
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  Order       Order[]
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  Order Order[]
 }
 
 model Product {
-  id              Int         @id @default(autoincrement())
-  name            String
-  description     String?
-  imageUrl        String? // รูปภาพ URL ของผลิตภัณฑ์
-  tireSize        String // ขนาดยาง เช่น 100/90-14 M/C 57P
-  patternAndType  String // ลายดอกยาง เช่น SS-560R T/L
-  overallDiameter Float // เส้นผ่านศูนย์กลาง (mm.) เช่น 535
-  overallWidth    Float // ความกว้าง (mm.) เช่น 98
-  measurementRim  String // ขนาดวงล้อที่ใช้วัด เช่น MT 2.15
-  standardRim     String // ขนาดวงล้อมาตรฐาน เช่น MT 2.50
-  wheel           WheelType // ประเภทของล้อที่สามารถใช้ยางได้ (หน้า, หลัง, หรือ ทั้งคู่)
-  type            TireType // ประเภทของยางตามที่กำหนด เช่น Scooter, OnRoad-Automatic เป็นต้น
-  quantity        Int // จำนวนสินค้าที่มีในคลัง
-  price           Float
-  orderItems      OrderItem[]
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
+  id Int @id @default(autoincrement())
+
+  name        String
+  description String?
+
+  imageUrl       String? @map("image_url") // รูปภาพ URL ของผลิตภัณฑ์
+  patternAndType String  @map("pattern_and_type") // ลายดอกยาง เช่น SS-560R T/L
+
+  wheel WheelType // ประเภทของล้อที่สามารถใช้ยางได้ (หน้า, หลัง, หรือ ทั้งคู่)
+  type  TireType // ประเภทของยางตามที่กำหนด เช่น Scooter, OnRoad-Automatic เป็นต้น
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  orderItems  OrderItem[]
+  ProductSize ProductSize[]
 }
 
-model CustomTire {
-  id              Int         @id @default(autoincrement())
-  userId          String
-  user            User        @relation(fields: [userId], references: [id])
-  name            String // ชื่อยางที่ผู้ใช้กำหนดเอง
-  tireSize        String // ขนาดยาง เช่น 100/90-14 M/C 57P
-  patternAndType  String // ลายดอกยาง เช่น SS-560R T/L
-  overallDiameter Float // เส้นผ่านศูนย์กลาง (mm.) เช่น 535
-  overallWidth    Float // ความกว้าง (mm.) เช่น 98
-  measurementRim  String // ขนาดวงล้อที่ใช้วัด เช่น MT 2.15
-  standardRim     String // ขนาดวงล้อมาตรฐาน เช่น MT 2.50
-  wheel           WheelType // ประเภทของล้อที่สามารถใช้ยางได้ (หน้า, หลัง, หรือ ทั้งคู่)
-  type            TireType // ประเภทของยางตามที่กำหนด เช่น Scooter, OnRoad-Automatic เป็นต้น
-  quantity        Int // จำนวนสินค้าที่มีในคลัง
-  price           Float // ราคาที่กำหนดเอง
-  orderItems      OrderItem[]
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
+model ProductSize {
+  id        Int     @id @default(autoincrement())
+  productId Int     @map("product_id")
+  product   Product @relation(fields: [productId], references: [id])
+
+  name            String // 90/90-14 M/C 46P
+  overallDiameter Float  @map("overall_diameter") // เส้นผ่านศูนย์กลาง (mm.) เช่น 535
+  overallWidth    Float  @map("overall_width") // ความกว้าง (mm.) เช่น 98
+  measurementRim  String @map("measurement_rim") // ขนาดวงล้อที่ใช้วัด เช่น MT 2.15
+  standardRim     String @map("standard_rim") // ขนาดวงล้อมาตรฐาน เช่น MT 2.50
+
+  price    Float
+  quantity Int
+
+  createdAt DateTime    @default(now()) @map("created_at")
+  updatedAt DateTime    @updatedAt @map("updated_at")
+  OrderItem OrderItem[]
 }
 
 model Order {
   id          Int         @id @default(autoincrement())
-  userId      String
+  userId      String      @map("user_id")
   user        User        @relation(fields: [userId], references: [id])
   status      OrderStatus @default(PROCESSING)
-  orderItems  OrderItem[]
-  totalAmount Float
+  totalAmount Float       @map("total_amount")
 
-  addressId       Int
-  customerAddress Address @relation(fields: [addressId], references: [id])
+  addressId Int @map("address_id")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  orderItems      OrderItem[]
+  customerAddress Address     @relation(fields: [addressId], references: [id])
 }
 
 model OrderItem {
-  id           Int         @id @default(autoincrement())
-  orderId      Int
-  order        Order       @relation(fields: [orderId], references: [id])
-  productId    Int?
-  product      Product?    @relation(fields: [productId], references: [id])
-  customTireId Int?
-  customTire   CustomTire? @relation(fields: [customTireId], references: [id])
-  quantity     Int
-  price        Float
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
+  id      Int   @id @default(autoincrement())
+  orderId Int   @map("order_id")
+  order   Order @relation(fields: [orderId], references: [id])
+
+  productId Int?     @map("product_id")
+  product   Product? @relation(fields: [productId], references: [id])
+
+  productSizeId Int?         @map("product_size_id")
+  productSize   ProductSize? @relation(fields: [productSizeId], references: [id])
+
+  quantity Int
+  price    Float
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 }
 
 enum UserRole {
