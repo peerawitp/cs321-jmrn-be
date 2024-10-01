@@ -2,10 +2,12 @@ import { Elysia } from "elysia";
 
 import { auth } from "./controllers/auth";
 import { user } from "./controllers/user";
+import cors from "@elysiajs/cors";
 
 const app = new Elysia()
   .use(auth)
   .use(user)
+  .use(cors())
   .get("/", () => "Hello Tyre Shop!")
   .listen(3000);
 

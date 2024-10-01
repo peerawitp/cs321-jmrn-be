@@ -1,3 +1,4 @@
+import { UserRole } from "@prisma/client";
 import { Static, t } from "elysia";
 
 export const LoginDTO = t.Object({
@@ -10,7 +11,14 @@ export const LoginDTO = t.Object({
 });
 
 export const LoginResponseDTO = t.Object({
-  token: t.String(),
+  id: t.String(),
+  email: t.String({
+    format: "email",
+  }),
+  firstName: t.String(),
+  lastName: t.String(),
+  role: t.String({ enum: UserRole }),
+  accessToken: t.String(),
 });
 export type LoginDTOType = Static<typeof LoginDTO>;
 

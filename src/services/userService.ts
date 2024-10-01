@@ -31,6 +31,29 @@ const findUserFromPhone = async (phone: string) => {
   return user;
 };
 
+const findAddressFromUserID = async (id: string) => {
+  const address = await db.address.findMany({
+    where: {
+      userId: id,
+    },
+    select: {
+      id: true,
+      userId: true,
+      houseNumber: true,
+      village: true,
+      alley: true,
+      street: true,
+      subDistrict: true,
+      district: true,
+      province: true,
+      postalCode: true,
+      country: true,
+    },
+  });
+
+  return address;
+};
+
 const createUser = async (user: RegisterDTOType) => {
   if (await findUserFromEmail(user.email))
     throw new Error("EMAIL_ALREADY_EXIST");
@@ -55,9 +78,13 @@ const addNewAddress = async (userId: string, address: AddAddressDTOType) => {
   const newAddress = await db.address.create({
     data: {
       userId: userId,
+      houseNumber: address.houseNumber,
+      village: address.village || "",
+      alley: address.alley || "",
       street: address.street,
-      city: address.city,
-      state: address.state,
+      subDistrict: address.subDistrict,
+      district: address.district,
+      province: address.province,
       postalCode: address.postalCode,
       country: address.country,
     },
@@ -69,6 +96,7 @@ export default {
   findUserFromID,
   findUserFromEmail,
   findUserFromPhone,
+  findAddressFromUserID,
   createUser,
   addNewAddress,
 };

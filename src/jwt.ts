@@ -1,4 +1,5 @@
 import { jwt } from "@elysiajs/jwt";
+import { UserRole } from "@prisma/client";
 import { Elysia, t } from "elysia";
 
 export const jwtAccess = new Elysia({
@@ -10,6 +11,11 @@ export const jwtAccess = new Elysia({
       id: t.String(),
       email: t.String({
         format: "email",
+      }),
+      firstName: t.String(),
+      lastName: t.String(),
+      role: t.String({
+        enum: UserRole,
       }),
     }),
     secret: process.env.JWT_SECRET!,

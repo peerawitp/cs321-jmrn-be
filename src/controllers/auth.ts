@@ -24,8 +24,11 @@ export const auth = async (app: Elysia) =>
           const accessToken = await jwt.sign({
             id: user.id,
             email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            role: user.role,
           });
-          return { token: accessToken };
+          return { ...user, accessToken };
         },
         {
           body: LoginDTO,
@@ -40,6 +43,9 @@ export const auth = async (app: Elysia) =>
           const accessToken = await jwt.sign({
             id: user.id,
             email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            role: user.role,
           });
           return {
             id: user.id,
