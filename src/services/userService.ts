@@ -1,8 +1,9 @@
 import { RegisterDTOType } from "../dtos/Auth";
 
-import { AddAddressDTOType } from "../dtos/User";
+import { AddAddressDTOType, CreateUserOrderDTOType } from "../dtos/User";
 
 import { db } from "../db";
+import orderService from "./orderService";
 
 const findUserFromID = async (id: string) => {
   const user = await db.user.findUnique({
@@ -92,6 +93,79 @@ const addNewAddress = async (userId: string, address: AddAddressDTOType) => {
   return newAddress;
 };
 
+const findOrderFromUserID = async (userId: string) => {
+  const orders = await db.order.findMany({
+    where: {
+      userId,
+    },
+    select: {
+      id: true,
+      userId: true,
+      addressId: true,
+      status: true,
+      totalAmount: true,
+      orderItems: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
+  return orders;
+};
+
+const createOrder = async (
+  userId: string,
+  createOrder: CreateUserOrderDTOType,
+) => {
+  const productSizes = await db.productSize.findMany({
+    where: {
+      id: {
+        in: createOrder.orderItems.map((item) => item.productSizeId),
+      },
+    },
+  });
+
+  // calculate total amount
+  const totalAmount = productSizes.reduce((acc, curr) => {
+    const item = createOrder.orderItems.find(
+      (item) => item.productSizeId === curr.id,
+    );
+    if (!item) return acc;
+    return acc + item.quantity * curr.price;
+  }, 0);
+
+  // decrease quantity
+  for (const item of createOrder.orderItems) {
+    await orderService.decreaseProductSizeQuantity(
+      item.productSizeId,
+      item.quantity,
+    );
+  }
+
+  const newOrder = await db.order.create({
+    data: {
+      userId,
+      addressId: createOrder.addressId,
+      status: "WAITING_PAYMENT",
+      totalAmount: totalAmount,
+      orderItems: {
+        create: createOrder.orderItems.map((item) => ({
+          productId: item.productId,
+          productSizeId: item.productSizeId,
+          quantity: item.quantity,
+          price:
+            productSizes.find((size) => size.id === item.productSizeId)
+              ?.price || 0,
+        })),
+      },
+    },
+    include: {
+      orderItems: true,
+    },
+  });
+
+  return newOrder;
+};
+
 export default {
   findUserFromID,
   findUserFromEmail,
@@ -99,4 +173,6 @@ export default {
   findAddressFromUserID,
   createUser,
   addNewAddress,
+  findOrderFromUserID,
+  createOrder,
 };

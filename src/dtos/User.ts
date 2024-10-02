@@ -1,4 +1,4 @@
-import { UserRole } from "@prisma/client";
+import { OrderStatus, UserRole } from "@prisma/client";
 import { Static, t } from "elysia";
 
 export const AddAddressDTO = t.Object({
@@ -81,4 +81,52 @@ export const GetUserInfoResponseDTO = t.Object({
   role: t.String({ enum: UserRole }),
   phone: t.String(),
   addresses: t.Array(AddAddressResponseDTO),
+});
+
+export const GetOrderItemResponseDTO = t.Object({
+  id: t.Number(),
+  orderId: t.Number(),
+  productId: t.Number(),
+  productSizeId: t.Number(),
+  quantity: t.Number(),
+  price: t.Number(),
+  createdAt: t.Date(),
+  updatedAt: t.Date(),
+});
+
+export const GetUserOrderResponseDTO = t.Array(
+  t.Object({
+    id: t.Number(),
+    userId: t.String(),
+    addressId: t.Number(),
+    status: t.String({ enum: OrderStatus }),
+    totalAmount: t.Number(),
+    orderItems: t.Array(GetOrderItemResponseDTO),
+    createdAt: t.Date(),
+    updatedAt: t.Date(),
+  }),
+);
+
+export const CreateUserOrderDTO = t.Object({
+  addressId: t.Number(),
+  orderItems: t.Array(
+    t.Object({
+      productId: t.Number(),
+      productSizeId: t.Number(),
+      quantity: t.Number(),
+    }),
+  ),
+});
+
+export type CreateUserOrderDTOType = Static<typeof CreateUserOrderDTO>;
+
+export const CreateUserOrderResponseDTO = t.Object({
+  id: t.Number(),
+  userId: t.String(),
+  addressId: t.Number(),
+  status: t.String({ enum: OrderStatus }),
+  totalAmount: t.Number(),
+  orderItems: t.Array(GetOrderItemResponseDTO),
+  createdAt: t.Date(),
+  updatedAt: t.Date(),
 });
