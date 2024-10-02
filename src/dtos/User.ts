@@ -2,31 +2,73 @@ import { UserRole } from "@prisma/client";
 import { Static, t } from "elysia";
 
 export const AddAddressDTO = t.Object({
-  houseNumber: t.String(),
-  village: t.String(),
-  alley: t.String(),
-  street: t.String(),
-  subDistrict: t.String(),
-  district: t.String(),
-  province: t.String(),
-  postalCode: t.String(),
-  country: t.String(),
+  houseNumber: t.String({
+    minLength: 1,
+  }),
+  village: t.Nullable(
+    t.String({
+      minLength: 1,
+    }),
+  ),
+  alley: t.Nullable(
+    t.String({
+      minLength: 1,
+    }),
+  ),
+  street: t.String({
+    minLength: 1,
+  }),
+  subDistrict: t.String({
+    minLength: 1,
+  }),
+  district: t.String({
+    minLength: 1,
+  }),
+  province: t.String({
+    minLength: 1,
+  }),
+  postalCode: t.String({
+    minLength: 5,
+  }),
+  country: t.String({
+    minLength: 2,
+  }),
 });
 
 export type AddAddressDTOType = Static<typeof AddAddressDTO>;
 
 export const AddAddressResponseDTO = t.Object({
-  id: t.Number(),
-  userId: t.String(),
-  houseNumber: t.String(),
-  village: t.Nullable(t.String()),
-  alley: t.Nullable(t.String()),
-  street: t.String(),
-  subDistrict: t.String(),
-  district: t.String(),
-  province: t.String(),
-  postalCode: t.String(),
-  country: t.String(),
+  houseNumber: t.String({
+    minLength: 1,
+  }),
+  village: t.Nullable(
+    t.String({
+      minLength: 1,
+    }),
+  ),
+  alley: t.Nullable(
+    t.String({
+      minLength: 1,
+    }),
+  ),
+  street: t.String({
+    minLength: 1,
+  }),
+  subDistrict: t.String({
+    minLength: 1,
+  }),
+  district: t.String({
+    minLength: 1,
+  }),
+  province: t.String({
+    minLength: 1,
+  }),
+  postalCode: t.String({
+    minLength: 5,
+  }),
+  country: t.String({
+    minLength: 2,
+  }),
 });
 
 export const GetUserInfoResponseDTO = t.Object({
@@ -38,19 +80,5 @@ export const GetUserInfoResponseDTO = t.Object({
   lastName: t.String(),
   role: t.String({ enum: UserRole }),
   phone: t.String(),
-  addresses: t.Array(
-    t.Object({
-      id: t.Number(),
-      userId: t.String(),
-      houseNumber: t.String(),
-      village: t.Nullable(t.String()),
-      alley: t.Nullable(t.String()),
-      street: t.String(),
-      subDistrict: t.String(),
-      district: t.String(),
-      province: t.String(),
-      postalCode: t.String(),
-      country: t.String(),
-    }),
-  ),
+  addresses: t.Array(AddAddressResponseDTO),
 });
