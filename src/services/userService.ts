@@ -116,54 +116,58 @@ const createOrder = async (
   userId: string,
   createOrder: CreateUserOrderDTOType,
 ) => {
-  const productSizes = await db.productSize.findMany({
-    where: {
-      id: {
-        in: createOrder.orderItems.map((item) => item.productSizeId),
+  return await db.$transaction(async (tx) => {
+    const productSizes = await tx.productSize.findMany({
+      where: {
+        id: {
+          in: createOrder.orderItems.map((item) => item.productSizeId),
+        },
       },
-    },
-  });
+    });
 
-  // calculate total amount
-  const totalAmount = productSizes.reduce((acc, curr) => {
-    const item = createOrder.orderItems.find(
-      (item) => item.productSizeId === curr.id,
-    );
-    if (!item) return acc;
-    return acc + item.quantity * curr.price;
-  }, 0);
+    // calculate total amount
+    const totalAmount = productSizes.reduce((acc, curr) => {
+      const item = createOrder.orderItems.find(
+        (item) => item.productSizeId === curr.id,
+      );
+      if (!item) return acc;
+      return acc + item.quantity * curr.price;
+    }, 0);
 
-  // decrease quantity
-  for (const item of createOrder.orderItems) {
-    await orderService.decreaseProductSizeQuantity(
-      item.productSizeId,
-      item.quantity,
-    );
-  }
+    // decrease quantity using the transaction
+    for (const item of createOrder.orderItems) {
+      await orderService.decreaseProductSizeQuantity(
+        tx,
+        item.productSizeId,
+        item.quantity,
+      );
+    }
 
-  const newOrder = await db.order.create({
-    data: {
-      userId,
-      addressId: createOrder.addressId,
-      status: "WAITING_PAYMENT",
-      totalAmount: totalAmount,
-      orderItems: {
-        create: createOrder.orderItems.map((item) => ({
-          productId: item.productId,
-          productSizeId: item.productSizeId,
-          quantity: item.quantity,
-          price:
-            productSizes.find((size) => size.id === item.productSizeId)
-              ?.price || 0,
-        })),
+    // Create the new order with the transaction
+    const newOrder = await tx.order.create({
+      data: {
+        userId,
+        addressId: createOrder.addressId,
+        status: "WAITING_PAYMENT",
+        totalAmount: totalAmount,
+        orderItems: {
+          create: createOrder.orderItems.map((item) => ({
+            productId: item.productId,
+            productSizeId: item.productSizeId,
+            quantity: item.quantity,
+            price:
+              productSizes.find((size) => size.id === item.productSizeId)
+                ?.price || 0,
+          })),
+        },
       },
-    },
-    include: {
-      orderItems: true,
-    },
-  });
+      include: {
+        orderItems: true,
+      },
+    });
 
-  return newOrder;
+    return newOrder;
+  });
 };
 
 export default {

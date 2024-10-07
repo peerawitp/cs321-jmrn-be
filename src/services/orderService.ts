@@ -1,10 +1,9 @@
-import { db } from "../db";
-
 const checkProductSizeQuantity = async (
+  tx: any,
   productSizeId: number,
   quantity: number,
 ) => {
-  const productSize = await db.productSize.findUnique({
+  const productSize = await tx.productSize.findUnique({
     where: { id: productSizeId },
   });
   if (!productSize) {
@@ -18,12 +17,17 @@ const checkProductSizeQuantity = async (
 };
 
 const decreaseProductSizeQuantity = async (
+  tx: any,
   productSizeId: number,
   quantity: number,
 ) => {
-  const productSize = await checkProductSizeQuantity(productSizeId, quantity);
+  const productSize = await checkProductSizeQuantity(
+    tx,
+    productSizeId,
+    quantity,
+  );
 
-  const updatedProduct = await db.productSize.update({
+  const updatedProduct = await tx.productSize.update({
     where: { id: productSizeId },
     data: { quantity: productSize.quantity - quantity },
   });
@@ -31,5 +35,6 @@ const decreaseProductSizeQuantity = async (
 };
 
 export default {
+  checkProductSizeQuantity,
   decreaseProductSizeQuantity,
 };
