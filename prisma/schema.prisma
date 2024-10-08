@@ -40,7 +40,7 @@ model Address {
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
-  Order Order[]
+  orders Order[]
 }
 
 model Product {
@@ -58,8 +58,8 @@ model Product {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  orderItems  OrderItem[]
-  ProductSize ProductSize[]
+  orderItems   OrderItem[]
+  productSizes ProductSize[]
 }
 
 model ProductSize {
@@ -76,9 +76,10 @@ model ProductSize {
   price    Float
   quantity Int
 
-  createdAt DateTime    @default(now()) @map("created_at")
-  updatedAt DateTime    @updatedAt @map("updated_at")
-  OrderItem OrderItem[]
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  orderItems OrderItem[]
 }
 
 model Order {
@@ -102,10 +103,10 @@ model OrderItem {
   orderId Int   @map("order_id")
   order   Order @relation(fields: [orderId], references: [id])
 
-  productId Int     @map("product_id")
+  productId Int      @map("product_id")
   product   Product? @relation(fields: [productId], references: [id])
 
-  productSizeId Int         @map("product_size_id")
+  productSizeId Int          @map("product_size_id")
   productSize   ProductSize? @relation(fields: [productSizeId], references: [id])
 
   quantity Int
