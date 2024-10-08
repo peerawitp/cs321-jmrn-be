@@ -8,12 +8,13 @@ async function main() {
     data: {
       name: "Scooter Tire Model X",
       description: "High-performance tire for scooters",
-      imageUrl: "https://example.com/tire1.jpg",
+      imageUrl:
+        "https://www.irctirethailand.com/wp-content/uploads/2021/01/MB48-405x330.jpg",
       patternAndType: "SS-560R T/L",
       wheel: "FRONT", // Assuming WheelType enum includes values like FRONT, REAR, BOTH
       type: "SCOOTER", // Assuming TireType enum includes values like Scooter, OnRoad-Automatic
 
-      ProductSize: {
+      productSizes: {
         create: [
           {
             name: "90/90-14 M/C 46P",
@@ -42,12 +43,13 @@ async function main() {
     data: {
       name: "OnRoad Automatic Tire Z",
       description: "Durable tire for on-road automatic vehicles",
-      imageUrl: "https://example.com/tire2.jpg",
+      imageUrl:
+        "https://www.irctirethailand.com/wp-content/uploads/2021/01/NR50-405x330.jpg",
       patternAndType: "SS-660Z R/L",
       wheel: "REAR",
       type: "ONROAD_AUTOMATIC",
 
-      ProductSize: {
+      productSizes: {
         create: [
           {
             name: "110/90-16 M/C 59S",
