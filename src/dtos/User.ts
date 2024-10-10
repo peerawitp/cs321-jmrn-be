@@ -5,19 +5,9 @@ export const AddAddressDTO = t.Object({
   houseNumber: t.String({
     minLength: 1,
   }),
-  village: t.Nullable(
-    t.String({
-      minLength: 1,
-    }),
-  ),
-  alley: t.Nullable(
-    t.String({
-      minLength: 1,
-    }),
-  ),
-  street: t.String({
-    minLength: 1,
-  }),
+  village: t.Nullable(t.String()),
+  alley: t.Nullable(t.String()),
+  street: t.Nullable(t.String()),
   subDistrict: t.String({
     minLength: 1,
   }),
@@ -41,19 +31,9 @@ export const AddAddressResponseDTO = t.Object({
   houseNumber: t.String({
     minLength: 1,
   }),
-  village: t.Nullable(
-    t.String({
-      minLength: 1,
-    }),
-  ),
-  alley: t.Nullable(
-    t.String({
-      minLength: 1,
-    }),
-  ),
-  street: t.String({
-    minLength: 1,
-  }),
+  village: t.Nullable(t.String()),
+  alley: t.Nullable(t.String()),
+  street: t.Nullable(t.String()),
   subDistrict: t.String({
     minLength: 1,
   }),

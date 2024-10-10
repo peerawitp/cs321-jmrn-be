@@ -31,7 +31,7 @@ model Address {
   houseNumber String   @map("house_number") // หมายเลขบ้าน
   village     String? // หมู่บ้าน (optional)
   alley       String? // ซอย (optional)
-  street      String // ถนน
+  street      String? // ถนน
   subDistrict String   @map("sub_district") // ตำบล/แขวง
   district    String // อำเภอ/เขต
   province    String // จังหวัด
