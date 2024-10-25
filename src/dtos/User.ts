@@ -28,6 +28,7 @@ export const AddAddressDTO = t.Object({
 export type AddAddressDTOType = Static<typeof AddAddressDTO>;
 
 export const AddAddressResponseDTO = t.Object({
+  id: t.Number(),
   houseNumber: t.String({
     minLength: 1,
   }),
