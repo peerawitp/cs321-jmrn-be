@@ -34,7 +34,25 @@ const decreaseProductSizeQuantity = async (
   return updatedProduct;
 };
 
+const bringBackProductSizeQuantity = async (
+  tx: any,
+  orderItems: { productSizeId: number; quantity: number }[],
+) => {
+  for (const item of orderItems) {
+    const productSize = await tx.productSize.findUnique({
+      where: { id: item.productSizeId },
+    });
+    await tx.productSize.update({
+      where: { id: item.productSizeId },
+      data: { quantity: productSize.quantity + item.quantity },
+    });
+  }
+
+  return true;
+};
+
 export default {
   checkProductSizeQuantity,
   decreaseProductSizeQuantity,
+  bringBackProductSizeQuantity,
 };

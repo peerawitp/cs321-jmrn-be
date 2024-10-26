@@ -117,3 +117,9 @@ export const ConfirmReceiveDTO = t.Object({
 });
 
 export const ConfirmReceiveResponseDTO = CreateUserOrderDTO;
+
+export const CancelOrderDTO = t.Object({
+  orderId: t.Number(),
+});
+
+export const CancelOrderResponseDTO = CreateUserOrderDTO;

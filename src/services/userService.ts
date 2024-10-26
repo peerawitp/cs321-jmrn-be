@@ -193,6 +193,41 @@ const confirmReceive = async (userId: string, orderId: number) => {
   });
 };
 
+const cancelOrder = async (userId: string, orderId: number) => {
+  const order = await db.order.findUnique({
+    where: {
+      id: orderId,
+    },
+    include: {
+      orderItems: true,
+    },
+  });
+  if (!order || order.userId !== userId) throw new Error("ORDER_NOT_FOUND");
+  if (order.status === "WAITING_PAYMENT") {
+    await db.$transaction(async (tx) => {
+      const bringBackSuccess = await orderService.bringBackProductSizeQuantity(
+        tx,
+        order.orderItems,
+      );
+      if (!bringBackSuccess) throw new Error("ORDER_CANCEL_FAILED");
+    });
+    const cancelledOrder = await db.order.update({
+      where: {
+        id: orderId,
+      },
+      include: {
+        orderItems: true,
+      },
+      data: {
+        status: "CANCELLED",
+      },
+    });
+    return cancelledOrder;
+  } else {
+    throw new Error("ORDER_CANNOT_CANCEL");
+  }
+};
+
 export default {
   findUserFromID,
   findUserFromEmail,
@@ -203,4 +238,5 @@ export default {
   findOrderFromUserID,
   createOrder,
   confirmReceive,
+  cancelOrder,
 };

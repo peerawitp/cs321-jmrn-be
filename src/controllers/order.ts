@@ -4,6 +4,8 @@ import userService from "../services/userService";
 
 import { isCustomer } from "../middlewares/isCustomer";
 import {
+  CancelOrderDTO,
+  CancelOrderResponseDTO,
   ConfirmReceiveDTO,
   ConfirmReceiveResponseDTO,
   CreateUserOrderDTO,
@@ -45,6 +47,17 @@ export const order = async (app: Elysia) =>
         {
           body: ConfirmReceiveDTO,
           response: ConfirmReceiveResponseDTO,
+        },
+      )
+      .post(
+        "/cancel",
+        async ({ user, body }) => {
+          const order = await userService.cancelOrder(user.id, body.orderId);
+          return order;
+        },
+        {
+          body: CancelOrderDTO,
+          response: CancelOrderResponseDTO,
         },
       ),
   );

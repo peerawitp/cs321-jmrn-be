@@ -123,6 +123,7 @@ enum UserRole {
 }
 
 enum OrderStatus {
+  CANCELLED
   PROCESSING
   WAITING_PAYMENT
   PREPARING
