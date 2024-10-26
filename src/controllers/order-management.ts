@@ -2,7 +2,7 @@ import { Elysia, t } from "elysia";
 
 import { isMarketing } from "../middlewares/isMarketing";
 import orderManagementService from "../services/orderManagementService";
-import { GetAllOrderResponseDTO } from "../dtos/orderManagement";
+import { GetAllOrderResponseDTO } from "../dtos/OrderManagement";
 import { OrderStatus } from "@prisma/client";
 
 export const orderManagement = async (app: Elysia) =>
