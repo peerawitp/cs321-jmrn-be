@@ -100,15 +100,8 @@ const findOrderFromUserID = async (userId: string) => {
     where: {
       userId,
     },
-    select: {
-      id: true,
-      userId: true,
-      addressId: true,
-      status: true,
-      totalAmount: true,
+    include: {
       orderItems: true,
-      createdAt: true,
-      updatedAt: true,
     },
   });
   return orders;
