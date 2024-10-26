@@ -18,10 +18,11 @@ model User {
   role UserRole @default(CUSTOMER)
 
   addresses Address[]
-  orders    Order[]
 
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+  Order         Order[]
+  VerifiedOrder Order[]  @relation("PaymentVerifiedByUser")
 }
 
 model Address {
@@ -89,6 +90,10 @@ model Order {
   status      OrderStatus @default(PROCESSING)
   totalAmount Float       @map("total_amount")
 
+  slipImageUrl            String? @map("slip_image_url")
+  paymentVerifiedByUserID String? @map("payment_verified_by_user_id")
+  paymentVerifiedByUser   User?   @relation("PaymentVerifiedByUser", fields: [paymentVerifiedByUserID], references: [id])
+
   addressId Int @map("address_id")
 
   orderItems      OrderItem[]
@@ -126,6 +131,7 @@ enum OrderStatus {
   CANCELLED
   PROCESSING
   WAITING_PAYMENT
+  WAITING_PAYMENT_CONFIRMATION
   PREPARING
   SHIPPED
   SUCCESS
