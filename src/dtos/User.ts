@@ -82,6 +82,8 @@ export const GetUserOrderResponseDTO = t.Array(
     addressId: t.Number(),
     status: t.String({ enum: OrderStatus }),
     totalAmount: t.Number(),
+    slipImageUrl: t.Nullable(t.String()),
+    paymentVerifiedByUserID: t.Nullable(t.String()),
     orderItems: t.Array(GetOrderItemResponseDTO),
     createdAt: t.Date(),
     updatedAt: t.Date(),
