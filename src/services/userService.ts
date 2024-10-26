@@ -170,6 +170,29 @@ const createOrder = async (
   });
 };
 
+const confirmReceive = async (userId: string, orderId: number) => {
+  const order = await db.order.findUnique({
+    where: {
+      id: orderId,
+    },
+  });
+
+  if (!order || order.userId !== userId) throw new Error("ORDER_NOT_FOUND");
+  if (order.status !== "SHIPPED") throw new Error("ORDER_NOT_SHIPPED");
+
+  return await db.order.update({
+    where: {
+      id: orderId,
+    },
+    include: {
+      orderItems: true,
+    },
+    data: {
+      status: "SUCCESS",
+    },
+  });
+};
+
 export default {
   findUserFromID,
   findUserFromEmail,
@@ -179,4 +202,5 @@ export default {
   addNewAddress,
   findOrderFromUserID,
   createOrder,
+  confirmReceive,
 };

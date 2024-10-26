@@ -111,3 +111,9 @@ export const CreateUserOrderResponseDTO = t.Object({
   createdAt: t.Date(),
   updatedAt: t.Date(),
 });
+
+export const ConfirmReceiveDTO = t.Object({
+  orderId: t.Number(),
+});
+
+export const ConfirmReceiveResponseDTO = CreateUserOrderDTO;
