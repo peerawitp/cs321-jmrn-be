@@ -11,6 +11,8 @@ import {
   CreateUserOrderDTO,
   CreateUserOrderResponseDTO,
   GetUserOrderResponseDTO,
+  UploadSlipDTO,
+  UploadSlipResponseDTO,
 } from "../dtos/User";
 
 export const order = async (app: Elysia) =>
@@ -58,6 +60,21 @@ export const order = async (app: Elysia) =>
         {
           body: CancelOrderDTO,
           response: CancelOrderResponseDTO,
+        },
+      )
+      .post(
+        "/upload-slip",
+        async ({ user, body }) => {
+          const order = await userService.uploadSlip(
+            user.id,
+            parseInt(body.orderId),
+            body.slip,
+          );
+          return order;
+        },
+        {
+          body: UploadSlipDTO,
+          response: UploadSlipResponseDTO,
         },
       ),
   );

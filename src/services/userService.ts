@@ -4,6 +4,8 @@ import { AddAddressDTOType, CreateUserOrderDTOType } from "../dtos/User";
 
 import { db } from "../db";
 import orderService from "./orderService";
+import fileService from "./fileService";
+import { FileBlob } from "bun";
 
 const findUserFromID = async (id: string) => {
   const user = await db.user.findUnique({
@@ -228,6 +230,34 @@ const cancelOrder = async (userId: string, orderId: number) => {
   }
 };
 
+const uploadSlip = async (userId: string, orderId: number, slip: File) => {
+  const order = await db.order.findUnique({
+    where: {
+      id: orderId,
+    },
+  });
+
+  if (!order || order.userId !== userId) throw new Error("ORDER_NOT_FOUND");
+  if (order.status !== "WAITING_PAYMENT")
+    throw new Error("ORDER_IN_WRONG_STATE");
+
+  const slipImageUrl = await fileService.uploadFile(slip);
+  if (!slipImageUrl) throw new Error("UPLOAD_FAILED");
+
+  return await db.order.update({
+    where: {
+      id: orderId,
+    },
+    include: {
+      orderItems: true,
+    },
+    data: {
+      slipImageUrl,
+      status: "WAITING_PAYMENT_CONFIRMATION",
+    },
+  });
+};
+
 export default {
   findUserFromID,
   findUserFromEmail,
@@ -239,4 +269,5 @@ export default {
   createOrder,
   confirmReceive,
   cancelOrder,
+  uploadSlip,
 };

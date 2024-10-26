@@ -107,6 +107,8 @@ export const CreateUserOrderResponseDTO = t.Object({
   addressId: t.Number(),
   status: t.String({ enum: OrderStatus }),
   totalAmount: t.Number(),
+  slipImageUrl: t.Nullable(t.String()),
+  paymentVerifiedByUserID: t.Nullable(t.String()),
   orderItems: t.Array(GetOrderItemResponseDTO),
   createdAt: t.Date(),
   updatedAt: t.Date(),
@@ -123,3 +125,13 @@ export const CancelOrderDTO = t.Object({
 });
 
 export const CancelOrderResponseDTO = CreateUserOrderDTO;
+
+export const UploadSlipDTO = t.Object({
+  orderId: t.String(),
+  slip: t.File({
+    type: ["image/png", "image/jpg", "image/jpeg"],
+    maxSize: 1024 * 1024 * 5,
+  }),
+});
+
+export const UploadSlipResponseDTO = CreateUserOrderDTO;
