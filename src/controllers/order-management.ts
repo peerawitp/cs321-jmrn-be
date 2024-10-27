@@ -1,6 +1,5 @@
 import { Elysia, t } from "elysia";
 
-import { isMarketing } from "../middlewares/isMarketing";
 import orderManagementService from "../services/orderManagementService";
 import {
   GetAllOrderResponseDTO,
@@ -9,11 +8,12 @@ import {
   VerifySlipDTO,
   VerifySlipResponseDTO,
 } from "../dtos/OrderManagement";
+import { isEmployee } from "../middlewares/isEmployee";
 
 export const orderManagement = async (app: Elysia) =>
   app.group("/order-management", (app) =>
     app
-      .use(isMarketing)
+      .use(isEmployee)
       .get(
         "/get-all-order",
         async () => {
