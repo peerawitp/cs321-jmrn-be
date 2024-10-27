@@ -87,7 +87,7 @@ model Order {
   id          Int         @id @default(autoincrement())
   userId      String      @map("user_id")
   user        User        @relation(fields: [userId], references: [id])
-  status      OrderStatus @default(PROCESSING)
+  status      OrderStatus @default(WAITING_PAYMENT)
   totalAmount Float       @map("total_amount")
 
   slipImageUrl            String? @map("slip_image_url")
@@ -129,7 +129,6 @@ enum UserRole {
 
 enum OrderStatus {
   CANCELLED
-  PROCESSING
   WAITING_PAYMENT
   WAITING_PAYMENT_CONFIRMATION
   PREPARING
