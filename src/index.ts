@@ -5,6 +5,7 @@ import { user } from "./controllers/user";
 import { order } from "./controllers/order";
 import { product } from "./controllers/product";
 import { orderManagement } from "./controllers/order-management";
+import { productManagement } from "./controllers/product-management";
 import cors from "@elysiajs/cors";
 
 const app = new Elysia()
@@ -13,6 +14,7 @@ const app = new Elysia()
   .use(order)
   .use(product)
   .use(orderManagement)
+  .use(productManagement)
   .use(cors())
   .get("/", () => "Hello Tyre Shop!")
   .listen(3000);

@@ -19,11 +19,19 @@ const uploadFile = async (file: File) => {
     public_id: generatedFileName,
   });
 
+  if (!result) {
+    throw new Error("Failed to upload file");
+  }
+
   const optimizedUrl = cloudinary.url(result.public_id, {
     secure: true,
     quality: "auto",
     fetch_format: "auto",
   });
+
+  if (!optimizedUrl) {
+    throw new Error("Failed to optimize image file");
+  }
 
   return optimizedUrl;
 };
