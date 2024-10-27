@@ -2,8 +2,13 @@ import { Elysia, t } from "elysia";
 
 import { isMarketing } from "../middlewares/isMarketing";
 import orderManagementService from "../services/orderManagementService";
-import { GetAllOrderResponseDTO } from "../dtos/OrderManagement";
-import { OrderStatus } from "@prisma/client";
+import {
+  GetAllOrderResponseDTO,
+  UpdateOrderStatusDTO,
+  UpdateOrderStatusResponseDTO,
+  VerifySlipDTO,
+  VerifySlipResponseDTO,
+} from "../dtos/OrderManagement";
 
 export const orderManagement = async (app: Elysia) =>
   app.group("/order-management", (app) =>
@@ -27,10 +32,22 @@ export const orderManagement = async (app: Elysia) =>
           );
         },
         {
-          body: t.Object({
-            orderId: t.Number(),
-            status: t.String({ enum: OrderStatus }),
-          }),
+          body: UpdateOrderStatusDTO,
+          response: UpdateOrderStatusResponseDTO,
+        },
+      )
+      .post(
+        "/verify-slip",
+        async ({ body, user }) => {
+          return await orderManagementService.verifySlip(
+            body.orderId,
+            body.status,
+            user.id,
+          );
+        },
+        {
+          body: VerifySlipDTO,
+          response: VerifySlipResponseDTO,
         },
       ),
   );
