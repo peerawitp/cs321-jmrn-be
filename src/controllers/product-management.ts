@@ -8,6 +8,10 @@ import {
   AddProductResponseDTO,
   AddProductSizeDTO,
   AddProductSizeResponseDTO,
+  EditProductDTO,
+  EditProductResponseDTO,
+  EditProductSizeDTO,
+  EditProductSizeResponseDTO,
 } from "../dtos/ProductManagement";
 import productManagementService from "../services/productManagementService";
 
@@ -42,6 +46,26 @@ export const productManagement = async (app: Elysia) =>
         {
           body: AddProductSizeDTO,
           response: AddProductSizeResponseDTO,
+        },
+      )
+      .post(
+        "/products/edit",
+        async ({ body }) => {
+          return await productManagementService.editProduct(body);
+        },
+        {
+          body: EditProductDTO,
+          response: EditProductResponseDTO,
+        },
+      )
+      .post(
+        "/products/sizes/edit",
+        async ({ body }) => {
+          return await productManagementService.editProductSize(body);
+        },
+        {
+          body: EditProductSizeDTO,
+          response: EditProductSizeResponseDTO,
         },
       ),
   );

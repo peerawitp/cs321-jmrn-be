@@ -1,6 +1,8 @@
 import {
   AddProductDTOType,
   AddProductSizeDTOType,
+  EditProductDTOType,
+  EditProductSizeDTOType,
 } from "../dtos/ProductManagement";
 import { db } from "../db";
 import { TireType, WheelType } from "@prisma/client";
@@ -73,7 +75,71 @@ const addProductSize = async (productSize: AddProductSizeDTOType) => {
   return newProductSize;
 };
 
+const editProduct = async (product: EditProductDTOType) => {
+  const existingProduct = await db.product.findFirst({
+    where: {
+      id: product.id,
+    },
+  });
+  if (!existingProduct) throw new Error("Product does not exist");
+
+  if (product.image) {
+    const imageUri = await fileService.uploadFile(product.image);
+    existingProduct.imageUrl = imageUri;
+  }
+
+  existingProduct.name = product.name || existingProduct.name;
+  existingProduct.description =
+    product.description || existingProduct.description;
+  existingProduct.patternAndType =
+    product.patternAndType || existingProduct.patternAndType;
+  existingProduct.wheel = (product.wheel as WheelType) || existingProduct.wheel;
+  existingProduct.type = (product.type as TireType) || existingProduct.type;
+
+  const updatedProduct = await db.product.update({
+    where: {
+      id: product.id,
+    },
+    data: existingProduct,
+  });
+
+  return updatedProduct;
+};
+
+const editProductSize = async (productSize: EditProductSizeDTOType) => {
+  const existingProductSize = await db.productSize.findFirst({
+    where: {
+      id: productSize.id,
+    },
+  });
+  if (!existingProductSize) throw new Error("Product size does not exist");
+
+  existingProductSize.name = productSize.name || existingProductSize.name;
+  existingProductSize.overallDiameter =
+    productSize.overallDiameter || existingProductSize.overallDiameter;
+  existingProductSize.overallWidth =
+    productSize.overallWidth || existingProductSize.overallWidth;
+  existingProductSize.measurementRim =
+    productSize.measurementRim || existingProductSize.measurementRim;
+  existingProductSize.standardRim =
+    productSize.standardRim || existingProductSize.standardRim;
+  existingProductSize.price = productSize.price || existingProductSize.price;
+  existingProductSize.quantity =
+    productSize.quantity || existingProductSize.quantity;
+
+  const updatedProductSize = await db.productSize.update({
+    where: {
+      id: productSize.id,
+    },
+    data: existingProductSize,
+  });
+
+  return updatedProductSize;
+};
+
 export default {
   addProduct,
   addProductSize,
+  editProduct,
+  editProductSize,
 };
