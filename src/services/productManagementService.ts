@@ -6,7 +6,7 @@ import {
 } from "../dtos/ProductManagement";
 import { db } from "../db";
 import { TireType, WheelType } from "@prisma/client";
-import fileService from "./fileService";
+import fileService, { ImageType } from "./fileService";
 
 const addProduct = async (product: AddProductDTOType) => {
   // check if product name already exists
@@ -21,7 +21,10 @@ const addProduct = async (product: AddProductDTOType) => {
   }
 
   // upload image
-  const imageUri = await fileService.uploadFile(product.image);
+  const imageUri = await fileService.uploadFile(
+    product.image,
+    ImageType.PRODUCT,
+  );
 
   // create new product
   const newProduct = await db.product.create({
@@ -84,7 +87,10 @@ const editProduct = async (product: EditProductDTOType) => {
   if (!existingProduct) throw new Error("Product does not exist");
 
   if (product.image) {
-    const imageUri = await fileService.uploadFile(product.image);
+    const imageUri = await fileService.uploadFile(
+      product.image,
+      ImageType.PRODUCT,
+    );
     existingProduct.imageUrl = imageUri;
   }
 

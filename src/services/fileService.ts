@@ -1,21 +1,26 @@
 import { v2 as cloudinary } from "cloudinary";
 
-const uploadFile = async (file: File) => {
+export enum ImageType {
+  SLIP = "slip",
+  PRODUCT = "product",
+}
+
+const uploadFile = async (file: File, type: ImageType) => {
   cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET,
   });
 
-  const generatedFileName = `${Date.now()}_slip`;
+  const generatedFileName = `${Date.now()}_` + type;
   const fileExtension = file.toString().split(".").pop();
 
-  const tmpPath = "/tmp/slip";
+  const tmpPath = "/tmp/" + type;
   const filePath = tmpPath + generatedFileName + "." + fileExtension;
   await Bun.write(filePath, file);
 
   const result = await cloudinary.uploader.upload(filePath, {
-    folder: "slip",
+    folder: type,
     public_id: generatedFileName,
   });
 

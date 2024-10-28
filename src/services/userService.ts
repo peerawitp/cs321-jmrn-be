@@ -4,7 +4,7 @@ import { AddAddressDTOType, CreateUserOrderDTOType } from "../dtos/User";
 
 import { db } from "../db";
 import orderService from "./orderService";
-import fileService from "./fileService";
+import fileService, { ImageType } from "./fileService";
 import { FileBlob } from "bun";
 
 const findUserFromID = async (id: string) => {
@@ -234,7 +234,7 @@ const uploadSlip = async (userId: string, orderId: number, slip: File) => {
   if (order.status !== "WAITING_PAYMENT")
     throw new Error("ORDER_IN_WRONG_STATE");
 
-  const slipImageUrl = await fileService.uploadFile(slip);
+  const slipImageUrl = await fileService.uploadFile(slip, ImageType.SLIP);
   if (!slipImageUrl) throw new Error("UPLOAD_FAILED");
 
   return await db.order.update({
