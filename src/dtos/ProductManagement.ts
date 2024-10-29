@@ -55,7 +55,7 @@ export const AddProductSizeResponseDTO = t.Object({
 });
 
 export const EditProductDTO = t.Object({
-  id: t.Number(),
+  id: t.String(),
   name: t.Optional(t.String()),
   description: t.Optional(t.Nullable(t.String())),
   image: t.Optional(

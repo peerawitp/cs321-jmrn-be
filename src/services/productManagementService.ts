@@ -81,7 +81,7 @@ const addProductSize = async (productSize: AddProductSizeDTOType) => {
 const editProduct = async (product: EditProductDTOType) => {
   const existingProduct = await db.product.findFirst({
     where: {
-      id: product.id,
+      id: parseInt(product.id),
     },
   });
   if (!existingProduct) throw new Error("Product does not exist");
@@ -104,7 +104,7 @@ const editProduct = async (product: EditProductDTOType) => {
 
   const updatedProduct = await db.product.update({
     where: {
-      id: product.id,
+      id: parseInt(product.id),
     },
     data: existingProduct,
   });
